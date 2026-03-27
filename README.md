@@ -4,38 +4,38 @@
 
 ---
 
-## 📋 Quick Navigation
+## Quick Navigation
 
-### 👨‍💼 For Interviews & Presentations
+### For Interviews & Presentations
 - **Start here:** [assets/documentation/01-PROJECT-OVERVIEW.md](assets/documentation/01-PROJECT-OVERVIEW.md)
 - **Demo guide:** [assets/documentation/09-EXAMINER-GUIDE.md](assets/documentation/09-EXAMINER-GUIDE.md)
 - **Test suite:** [Run DEMO_TEST.js](assets/testing/feature-tests/DEMO_TEST.js)
 
-### 👨‍💻 For Developers
+### For Developers
 - **Full architecture:** [assets/documentation/02-TECHNICAL-ARCHITECTURE.md](assets/documentation/02-TECHNICAL-ARCHITECTURE.md)
 - **API reference:** [assets/documentation/03-API-REFERENCE.md](assets/documentation/03-API-REFERENCE.md)
 - **Testing guide:** [assets/testing/README.md](assets/testing/README.md)
 
-### 🚀 For Deployment
+### For Deployment
 - **Deployment guide:** [assets/documentation/08-DEPLOYMENT-GUIDE.md](assets/documentation/08-DEPLOYMENT-GUIDE.md)
 - **Security best practices:** [assets/documentation/06-SECURITY-IMPLEMENTATION.md](assets/documentation/06-SECURITY-IMPLEMENTATION.md)
 
 ---
 
-## 🎯 Executive Summary
+## Executive Summary
 
 CreditXplain is a **production-ready fintech application** that makes credit scoring transparent and fair. Instead of black-box lending decisions, every application includes:
 
-✅ **Explainable Scores** - 7-factor breakdown showing what drove the decision  
-✅ **What-If Scenarios** - Shows applicants how to improve their score  
-✅ **Fair Lending** - Built-in bias detection aligned with compliance requirements  
-✅ **Real-World Ready** - Automatically maps 40+ banking field name variations  
-✅ **Hybrid Resilience** - Continues operating with fallback if ML service fails  
-✅ **Professional APIs** - 11 RESTful endpoints with JWT authentication
+**Explainable Scores** - 7-factor breakdown showing what drove the decision  
+**What-If Scenarios** - Shows applicants how to improve their score  
+**Fair Lending** - Built-in bias detection aligned with compliance requirements  
+**Real-World Ready** - Automatically maps 40+ banking field name variations  
+**Hybrid Resilience** - Continues operating with fallback if ML service fails  
+**Professional APIs** - 11 RESTful endpoints with JWT authentication
 
 ---
 
-## 🏗️ Project Structure
+## Project Structure
 
 ```
 creditxplain/
@@ -63,7 +63,7 @@ creditxplain/
 │   ├── requirements.txt
 │   └── artifacts/credit_model.joblib
 │
-├── assets/                          # 📂 NEW: Professional documentation
+├── assets/                          # NEW: Professional documentation
 │   ├── documentation/               # Complete project docs
 │   │   ├── README.md                # Documentation hub
 │   │   ├── 01-PROJECT-OVERVIEW.md   # Vision & objectives
@@ -93,7 +93,7 @@ creditxplain/
 
 ---
 
-## ⚡ Quick Start (5 Minutes)
+## Quick Start (5 Minutes)
 
 ### Prerequisites
 - Node.js 18+

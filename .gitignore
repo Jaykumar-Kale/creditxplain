@@ -76,4 +76,5 @@ env/
 # assets/documentation/     → INCLUDED (professional docs for interviews)
 # assets/testing/  → INCLUDED (testing guide)
 
-#assets/documentation/
+assets/documentation/
+
