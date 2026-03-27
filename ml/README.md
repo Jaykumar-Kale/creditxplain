@@ -31,6 +31,25 @@ uvicorn app:app --host 0.0.0.0 --port 8000 --reload
 - POST /score
 - POST /train
 
+## Train On Real Dataset
+
+Use a real CSV and compare multiple models (logistic regression, random forest, gradient boosting):
+
+```bash
+cd ml
+python train_real.py --data path/to/dataset.csv --target defaultRisk
+```
+
+If your dataset column names differ from the app schema:
+
+```bash
+python train_real.py --data path/to/dataset.csv --target defaultRisk --column-map column_map.json
+```
+
+See `DATA_REQUIREMENTS.md` and `column_map.example.json`.
+
+Note: high scores on tiny sample files are not meaningful. Evaluate on large, out-of-time validation data before deployment.
+
 ## Notes
 
 - If this service is unavailable, backend falls back to the JS scoring engine.

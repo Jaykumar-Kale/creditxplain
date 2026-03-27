@@ -1,0 +1,11 @@
+age,income,employmentYears,loanAmount,existingDebts,creditHistory,numberOfDependents,monthlyExpenses,savingsBalance,educationLevel,maritalStatus,homeOwnership,loanPurpose,defaultRisk
+29,720000,3,280000,6000,7.2,1,26000,90000,bachelor,single,rent,personal,0
+41,1200000,10,850000,18000,8.1,2,42000,350000,master,married,mortgage,home,0
+24,360000,1,250000,9000,4.8,0,19000,15000,high_school,single,rent,education,1
+35,640000,6,420000,12000,6.1,2,30000,60000,bachelor,married,rent,business,0
+52,540000,2,500000,22000,4.3,3,34000,18000,other,married,other,medical,1
+31,860000,5,450000,7000,7.8,1,28000,140000,master,single,own,car,0
+45,700000,8,520000,19000,5.2,2,36000,45000,bachelor,married,mortgage,personal,1
+27,490000,2,310000,11000,5.9,0,22000,30000,bachelor,single,rent,education,1
+38,980000,9,600000,13000,7.5,2,38000,220000,master,married,own,home,0
+33,760000,4,390000,9000,6.9,1,27000,95000,bachelor,single,mortgage,car,0

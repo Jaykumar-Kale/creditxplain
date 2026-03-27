@@ -1,0 +1,16 @@
+{
+  "AGE": "age",
+  "ANNUAL_INCOME": "income",
+  "YEARS_EMPLOYED": "employmentYears",
+  "REQUESTED_LOAN": "loanAmount",
+  "CURRENT_DEBTS_MONTHLY": "existingDebts",
+  "CREDIT_HISTORY_SCORE": "creditHistory",
+  "DEPENDENTS": "numberOfDependents",
+  "MONTHLY_EXPENSES": "monthlyExpenses",
+  "SAVINGS": "savingsBalance",
+  "EDUCATION": "educationLevel",
+  "MARITAL_STATUS": "maritalStatus",
+  "HOME_OWNERSHIP": "homeOwnership",
+  "LOAN_PURPOSE": "loanPurpose",
+  "IS_DEFAULT": "defaultRisk"
+}
