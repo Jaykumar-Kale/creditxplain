@@ -16,9 +16,11 @@ const app = express();
 // Render and similar platforms sit behind a proxy.
 app.set('trust proxy', 1);
 
+const normalizeOrigin = (value) => (value || '').trim().replace(/\/+$/, '');
+
 const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:5173')
   .split(',')
-  .map((origin) => origin.trim())
+  .map((origin) => normalizeOrigin(origin))
   .filter(Boolean);
 
 // Security Middleware
@@ -28,7 +30,7 @@ app.use(cors({
   origin: (origin, callback) => {
     // Allow tools/health checks with no Origin header.
     if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) return callback(null, true);
+    if (allowedOrigins.includes(normalizeOrigin(origin))) return callback(null, true);
     return callback(new Error('Not allowed by CORS'));
   },
   credentials: true

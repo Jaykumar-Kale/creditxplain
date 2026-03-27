@@ -1,6 +1,31 @@
 import axios from 'axios';
 
-const baseURL = import.meta.env.VITE_API_URL || '/api';
+function normalizeBaseURL(raw) {
+  const fallback = '/api';
+  if (!raw || typeof raw !== 'string') return fallback;
+
+  const trimmed = raw.trim();
+  if (!trimmed) return fallback;
+
+  // Keep relative values as-is, just strip trailing slash.
+  if (trimmed.startsWith('/')) {
+    return trimmed.replace(/\/+$/, '') || fallback;
+  }
+
+  // If an absolute URL is provided without /api, append /api.
+  try {
+    const url = new URL(trimmed);
+    const normalizedPath = (url.pathname || '').replace(/\/+$/, '');
+    if (!normalizedPath || normalizedPath === '/') {
+      url.pathname = '/api';
+    }
+    return url.toString().replace(/\/+$/, '');
+  } catch {
+    return trimmed.replace(/\/+$/, '') || fallback;
+  }
+}
+
+const baseURL = normalizeBaseURL(import.meta.env.VITE_API_URL);
 const api = axios.create({ baseURL });
 
 api.interceptors.request.use(config => {
