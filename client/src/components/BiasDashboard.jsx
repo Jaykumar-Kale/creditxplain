@@ -4,7 +4,7 @@ import { Shield, AlertTriangle } from 'lucide-react';
 import api from '../utils/api.js';
 import { motion } from 'framer-motion';
 
-export default function Biasdashboard() {
+export default function BiasDashboard() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 

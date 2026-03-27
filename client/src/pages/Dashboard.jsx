@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import CreditForm from '../components/CreditForm.jsx';
 import ScoreResult from '../components/ScoreResult.jsx';
-import Biasdashboard from '../components/Biasdashboard.jsx'; // ✅ FIXED
+import BiasDashboard from '../components/BiasDashboard.jsx';
 import DecisionFlow from '../components/DecisionFlow.jsx';
 import { RefreshCw } from 'lucide-react';
 import api from '../utils/api.js';
@@ -62,7 +62,7 @@ export default function Dashboard() {
         </div>
 
         <div className="space-y-6">
-          <Biasdashboard /> {/* ✅ FIXED */}
+          <BiasDashboard />
           <DecisionFlow />
         </div>
       </div>
