@@ -1,7 +1,8 @@
 // Pure JS ML Engine - No Python needed!
 // Implements Logistic Regression + Decision Tree logic with SHAP-like explanations
 
-export function calculateCreditScore(data) {
+export function calculateCreditScore(data, options = {}) {
+  const includeWhatIf = options.includeWhatIf !== false;
   const {
     age, income, employmentYears, loanAmount, existingDebts,
     creditHistory, numberOfDependents, monthlyExpenses,
@@ -129,7 +130,9 @@ export function calculateCreditScore(data) {
   }
 
   // What-if scenarios
-  const whatIfScenarios = generateWhatIfScenarios(data, creditScore);
+  const whatIfScenarios = includeWhatIf
+    ? generateWhatIfScenarios(data, creditScore)
+    : [];
 
   return {
     creditScore,
@@ -149,7 +152,7 @@ function generateWhatIfScenarios(data, currentScore) {
 
   // Scenario 1: Improve credit history
   const improvedCredit = { ...data, creditHistory: Math.min(10, data.creditHistory + 2) };
-  const score1 = calculateCreditScore(improvedCredit).creditScore;
+  const score1 = calculateCreditScore(improvedCredit, { includeWhatIf: false }).creditScore;
   scenarios.push({
     scenario: 'If you improved credit history by 2 points',
     newScore: score1,
@@ -158,7 +161,7 @@ function generateWhatIfScenarios(data, currentScore) {
 
   // Scenario 2: Reduce debt by 30%
   const reducedDebt = { ...data, existingDebts: data.existingDebts * 0.7 };
-  const score2 = calculateCreditScore(reducedDebt).creditScore;
+  const score2 = calculateCreditScore(reducedDebt, { includeWhatIf: false }).creditScore;
   scenarios.push({
     scenario: 'If you reduced existing debts by 30%',
     newScore: score2,
@@ -167,7 +170,7 @@ function generateWhatIfScenarios(data, currentScore) {
 
   // Scenario 3: Increase savings by 50%
   const moreSavings = { ...data, savingsBalance: data.savingsBalance * 1.5 };
-  const score3 = calculateCreditScore(moreSavings).creditScore;
+  const score3 = calculateCreditScore(moreSavings, { includeWhatIf: false }).creditScore;
   scenarios.push({
     scenario: 'If you increased savings by 50%',
     newScore: score3,
@@ -176,7 +179,7 @@ function generateWhatIfScenarios(data, currentScore) {
 
   // Scenario 4: Request smaller loan
   const smallerLoan = { ...data, loanAmount: data.loanAmount * 0.7 };
-  const score4 = calculateCreditScore(smallerLoan).creditScore;
+  const score4 = calculateCreditScore(smallerLoan, { includeWhatIf: false }).creditScore;
   scenarios.push({
     scenario: 'If you requested 30% less loan amount',
     newScore: score4,
