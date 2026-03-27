@@ -13,11 +13,24 @@ dotenv.config();
 
 const app = express();
 
+// Render and similar platforms sit behind a proxy.
+app.set('trust proxy', 1);
+
+const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:5173')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
 // Security Middleware
 app.use(helmet());
 app.use(morgan('combined'));
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  origin: (origin, callback) => {
+    // Allow tools/health checks with no Origin header.
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error('Not allowed by CORS'));
+  },
   credentials: true
 }));
 app.use(express.json({ limit: '10mb' }));
@@ -52,12 +65,12 @@ app.use((err, req, res, next) => {
 // DB Connection
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
-    console.log('✅ MongoDB Connected');
+    console.log('MongoDB connected successfully');
     app.listen(process.env.PORT || 5000, () => {
-      console.log(`🚀 Server running on port ${process.env.PORT || 5000}`);
+      console.log(`Server running on port ${process.env.PORT || 5000}`);
     });
   })
   .catch(err => {
-    console.error('❌ MongoDB connection failed:', err);
+    console.error('MongoDB connection failed:', err);
     process.exit(1);
   });
