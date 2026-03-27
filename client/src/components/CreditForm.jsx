@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { motion } from 'framer-motion';
-import { ChevronRight, ChevronLeft, Send } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Send, Upload } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '../utils/api.js';
 
@@ -10,24 +10,40 @@ const steps = [
     title: 'Personal Info',
     fields: [
       { name: 'age', label: 'Age', type: 'number', placeholder: '28', min: 18, max: 80 },
-      { name: 'educationLevel', label: 'Education Level', type: 'select',
-        options: [['high_school','High School'],['bachelor','Bachelor\'s'],['master','Master\'s'],['phd','PhD'],['other','Other']] },
-      { name: 'maritalStatus', label: 'Marital Status', type: 'select',
-        options: [['single','Single'],['married','Married'],['divorced','Divorced'],['widowed','Widowed']] },
+      {
+        name: 'educationLevel',
+        label: 'Education Level',
+        type: 'select',
+        options: [['high_school', 'High School'], ['bachelor', "Bachelor's"], ['master', "Master's"], ['phd', 'PhD'], ['other', 'Other']]
+      },
+      {
+        name: 'maritalStatus',
+        label: 'Marital Status',
+        type: 'select',
+        options: [['single', 'Single'], ['married', 'Married'], ['divorced', 'Divorced'], ['widowed', 'Widowed']]
+      },
       { name: 'numberOfDependents', label: 'Number of Dependents', type: 'number', placeholder: '0', min: 0 },
-      { name: 'gender', label: 'Gender (optional, for bias analysis)', type: 'select',
-        options: [['prefer_not_to_say','Prefer not to say'],['male','Male'],['female','Female'],['other','Other']] }
+      {
+        name: 'gender',
+        label: 'Gender (optional, for bias analysis)',
+        type: 'select',
+        options: [['prefer_not_to_say', 'Prefer not to say'], ['male', 'Male'], ['female', 'Female'], ['other', 'Other']]
+      }
     ]
   },
   {
     title: 'Financial Details',
     fields: [
-      { name: 'income', label: 'Annual Income (₹)', type: 'number', placeholder: '600000', min: 0 },
-      { name: 'monthlyExpenses', label: 'Monthly Expenses (₹)', type: 'number', placeholder: '25000', min: 0 },
-      { name: 'existingDebts', label: 'Existing Monthly Debt Payments (₹)', type: 'number', placeholder: '5000', min: 0 },
-      { name: 'savingsBalance', label: 'Total Savings Balance (₹)', type: 'number', placeholder: '100000', min: 0 },
-      { name: 'homeOwnership', label: 'Home Ownership', type: 'select',
-        options: [['rent','Renting'],['own','Own Home'],['mortgage','Mortgage'],['other','Other']] }
+      { name: 'income', label: 'Annual Income (INR)', type: 'number', placeholder: '600000', min: 0 },
+      { name: 'monthlyExpenses', label: 'Monthly Expenses (INR)', type: 'number', placeholder: '25000', min: 0 },
+      { name: 'existingDebts', label: 'Existing Monthly Debt Payments (INR)', type: 'number', placeholder: '5000', min: 0 },
+      { name: 'savingsBalance', label: 'Total Savings Balance (INR)', type: 'number', placeholder: '100000', min: 0 },
+      {
+        name: 'homeOwnership',
+        label: 'Home Ownership',
+        type: 'select',
+        options: [['rent', 'Renting'], ['own', 'Own Home'], ['mortgage', 'Mortgage'], ['other', 'Other']]
+      }
     ]
   },
   {
@@ -40,9 +56,13 @@ const steps = [
   {
     title: 'Loan Details',
     fields: [
-      { name: 'loanAmount', label: 'Loan Amount Requested (₹)', type: 'number', placeholder: '500000', min: 1000 },
-      { name: 'loanPurpose', label: 'Loan Purpose', type: 'select',
-        options: [['home','Home Purchase'],['car','Car Loan'],['education','Education'],['business','Business'],['medical','Medical'],['personal','Personal'],['other','Other']] }
+      { name: 'loanAmount', label: 'Loan Amount Requested (INR)', type: 'number', placeholder: '500000', min: 1000 },
+      {
+        name: 'loanPurpose',
+        label: 'Loan Purpose',
+        type: 'select',
+        options: [['home', 'Home Purchase'], ['car', 'Car Loan'], ['education', 'Education'], ['business', 'Business'], ['medical', 'Medical'], ['personal', 'Personal'], ['other', 'Other']]
+      }
     ]
   }
 ];
@@ -50,33 +70,48 @@ const steps = [
 export default function CreditForm({ onResult }) {
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
-  const { register, handleSubmit, formState: { errors }, trigger, getValues } = useForm({
+  const [uploading, setUploading] = useState(false);
+  const [file, setFile] = useState(null);
+  const [uploadSummary, setUploadSummary] = useState(null);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    trigger
+  } = useForm({
     defaultValues: {
-      gender: 'prefer_not_to_say', educationLevel: 'bachelor',
-      maritalStatus: 'single', homeOwnership: 'rent',
-      loanPurpose: 'personal', numberOfDependents: 0,
-      existingDebts: 0, savingsBalance: 0
+      gender: 'prefer_not_to_say',
+      educationLevel: 'bachelor',
+      maritalStatus: 'single',
+      homeOwnership: 'rent',
+      loanPurpose: 'personal',
+      numberOfDependents: 0,
+      existingDebts: 0,
+      savingsBalance: 0
     }
   });
 
   const currentFields = steps[step].fields;
 
   const nextStep = async () => {
-    const fieldNames = currentFields.map(f => f.name);
+    const fieldNames = currentFields.map((f) => f.name);
     const valid = await trigger(fieldNames);
-    if (valid) setStep(s => Math.min(s + 1, steps.length - 1));
+    if (valid) setStep((s) => Math.min(s + 1, steps.length - 1));
   };
 
   const onSubmit = async (data) => {
     setLoading(true);
     try {
-      const numericFields = ['age','income','employmentYears','loanAmount','existingDebts',
-        'creditHistory','numberOfDependents','monthlyExpenses','savingsBalance'];
-      numericFields.forEach(f => { if (data[f] !== undefined) data[f] = Number(data[f]); });
+      const numericFields = ['age', 'income', 'employmentYears', 'loanAmount', 'existingDebts', 'creditHistory', 'numberOfDependents', 'monthlyExpenses', 'savingsBalance'];
+      numericFields.forEach((f) => {
+        if (data[f] !== undefined) data[f] = Number(data[f]);
+      });
 
       const res = await api.post('/credit/apply', data);
       onResult(res.data.result);
-      toast.success('Credit score calculated successfully!');
+      setUploadSummary(null);
+      toast.success('Credit score calculated successfully');
     } catch (err) {
       toast.error(err.response?.data?.error || 'Failed to calculate score');
     } finally {
@@ -84,9 +119,76 @@ export default function CreditForm({ onResult }) {
     }
   };
 
+  const onUploadPredict = async () => {
+    if (!file) {
+      toast.error('Please choose a CSV/XLSX file first');
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const form = new FormData();
+      form.append('file', file);
+
+      const res = await api.post('/credit/apply-upload', form, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+
+      onResult(res.data.firstResult);
+      setUploadSummary({
+        processedRows: res.data.processedRows,
+        successfulPredictions: res.data.successfulPredictions,
+        skipped: res.data.skipped?.length || 0
+      });
+
+      toast.success(`Uploaded successfully. ${res.data.successfulPredictions} prediction(s) created.`);
+    } catch (err) {
+      toast.error(err.response?.data?.error || 'Failed to process uploaded dataset');
+    } finally {
+      setUploading(false);
+    }
+  };
+
   return (
     <div className="card max-w-2xl mx-auto">
-      {/* Progress Bar */}
+      <div className="mb-6 p-4 rounded-xl border border-dashed border-brand-300 bg-brand-50/60 dark:bg-brand-900/20 dark:border-brand-700">
+        <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-100 mb-2">Quick Auto Mode (Recommended)</h3>
+        <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
+          Upload CSV or XLSX and get automatic predictions with minimal manual input.
+        </p>
+
+        <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
+          <input
+            type="file"
+            accept=".csv,.xlsx,.xls"
+            onChange={(e) => setFile(e.target.files?.[0] || null)}
+            className="text-sm text-gray-600 dark:text-gray-300"
+          />
+          <button
+            type="button"
+            onClick={onUploadPredict}
+            disabled={uploading}
+            className="btn-primary py-2 px-4 flex items-center gap-2"
+          >
+            {uploading ? (
+              <>
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> Processing...
+              </>
+            ) : (
+              <>
+                <Upload className="w-4 h-4" /> Upload & Predict
+              </>
+            )}
+          </button>
+        </div>
+
+        {uploadSummary && (
+          <p className="text-xs text-gray-600 dark:text-gray-300 mt-3">
+            Processed {uploadSummary.processedRows} row(s), successful: {uploadSummary.successfulPredictions}, skipped: {uploadSummary.skipped}.
+          </p>
+        )}
+      </div>
+
       <div className="mb-6">
         <div className="flex justify-between mb-2">
           {steps.map((s, i) => (
@@ -96,8 +198,7 @@ export default function CreditForm({ onResult }) {
           ))}
         </div>
         <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-          <div className="bg-brand-600 h-2 rounded-full transition-all duration-500"
-            style={{ width: `${((step + 1) / steps.length) * 100}%` }} />
+          <div className="bg-brand-600 h-2 rounded-full transition-all duration-500" style={{ width: `${((step + 1) / steps.length) * 100}%` }} />
         </div>
       </div>
 
@@ -108,34 +209,37 @@ export default function CreditForm({ onResult }) {
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {currentFields.map(field => (
-              <div key={field.name} className={field.type === 'select' ? '' : ''}>
+            {currentFields.map((field) => (
+              <div key={field.name}>
                 <label className="label">{field.label}</label>
                 {field.type === 'select' ? (
                   <select className="input-field" {...register(field.name, { required: `${field.label} is required` })}>
                     {field.options.map(([val, label]) => (
-                      <option key={val} value={val}>{label}</option>
+                      <option key={val} value={val}>
+                        {label}
+                      </option>
                     ))}
                   </select>
                 ) : (
-                  <input type={field.type} placeholder={field.placeholder}
+                  <input
+                    type={field.type}
+                    placeholder={field.placeholder}
                     className="input-field"
                     {...register(field.name, {
                       required: `${field.label} is required`,
                       min: field.min !== undefined ? { value: field.min, message: `Min value is ${field.min}` } : undefined,
                       max: field.max !== undefined ? { value: field.max, message: `Max value is ${field.max}` } : undefined
-                    })} />
+                    })}
+                  />
                 )}
-                {errors[field.name] && (
-                  <p className="text-red-500 text-xs mt-1">{errors[field.name].message}</p>
-                )}
+                {errors[field.name] && <p className="text-red-500 text-xs mt-1">{errors[field.name].message}</p>}
               </div>
             ))}
           </div>
 
           <div className="flex gap-3 pt-4">
             {step > 0 && (
-              <button type="button" onClick={() => setStep(s => s - 1)} className="btn-secondary flex items-center gap-2">
+              <button type="button" onClick={() => setStep((s) => s - 1)} className="btn-secondary flex items-center gap-2">
                 <ChevronLeft className="w-4 h-4" /> Back
               </button>
             )}
@@ -146,9 +250,13 @@ export default function CreditForm({ onResult }) {
             ) : (
               <button type="submit" disabled={loading} className="btn-primary flex items-center gap-2 ml-auto">
                 {loading ? (
-                  <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> Calculating...</>
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> Calculating...
+                  </>
                 ) : (
-                  <><Send className="w-4 h-4" /> Calculate Score</>
+                  <>
+                    <Send className="w-4 h-4" /> Calculate Score
+                  </>
                 )}
               </button>
             )}

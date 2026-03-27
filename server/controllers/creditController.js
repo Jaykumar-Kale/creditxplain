@@ -1,51 +1,113 @@
 import Application from '../models/Application.js';
 import { scoreApplication, computeBiasMetrics } from '../utils/mlEngine.js';
+import { normalizeApplicantFromRow, validateApplicantPayload } from '../utils/applicantNormalizer.js';
+
+async function createScoredApplication(userId, applicantData) {
+  const result = await scoreApplication(applicantData);
+
+  const application = new Application({
+    userId,
+    applicantData,
+    result: {
+      creditScore: result.creditScore,
+      decision: result.decision,
+      riskLevel: result.riskLevel,
+      probability: result.probability,
+      explanations: result.explanations,
+      recommendation: result.recommendation,
+      interestRateRange: result.interestRateRange,
+      maxApprovedAmount: result.maxApprovedAmount
+    },
+    whatIfScenarios: result.whatIfScenarios
+  });
+
+  await application.save();
+
+  return {
+    applicationId: application._id,
+    result: {
+      ...result,
+      applicationId: application._id
+    }
+  };
+}
 
 export const submitApplication = async (req, res) => {
   try {
     const applicantData = req.body;
-
-    // Validate required fields
-    const required = ['age', 'income', 'employmentYears', 'loanAmount', 'creditHistory', 'monthlyExpenses', 'loanPurpose'];
-    for (const field of required) {
-      if (applicantData[field] === undefined || applicantData[field] === null || applicantData[field] === '') {
-        return res.status(400).json({ error: `Missing required field: ${field}` });
-      }
+    const validation = validateApplicantPayload(applicantData);
+    if (!validation.ok) {
+      return res.status(400).json({ error: validation.error });
     }
 
-    // Run ML Engine
-    const result = await scoreApplication(applicantData);
-
-    // Save to DB
-    const application = new Application({
-      userId: req.user._id,
-      applicantData,
-      result: {
-        creditScore: result.creditScore,
-        decision: result.decision,
-        riskLevel: result.riskLevel,
-        probability: result.probability,
-        explanations: result.explanations,
-        recommendation: result.recommendation,
-        interestRateRange: result.interestRateRange,
-        maxApprovedAmount: result.maxApprovedAmount
-      },
-      whatIfScenarios: result.whatIfScenarios
-    });
-
-    await application.save();
+    const scored = await createScoredApplication(req.user._id, applicantData);
 
     res.status(201).json({
       success: true,
-      applicationId: application._id,
-      result: {
-        ...result,
-        applicationId: application._id
-      }
+      applicationId: scored.applicationId,
+      result: scored.result
     });
   } catch (err) {
     console.error('Credit scoring error:', err);
     res.status(500).json({ error: 'Failed to process application', details: err.message });
+  }
+};
+
+export const submitApplicationsFromRows = async (req, res) => {
+  try {
+    const rows = req.parsedRows;
+    if (!Array.isArray(rows) || rows.length === 0) {
+      return res.status(400).json({ error: 'No rows found in uploaded file' });
+    }
+
+    const maxRows = Math.min(rows.length, 200);
+    const accepted = [];
+    const skipped = [];
+
+    for (let i = 0; i < maxRows; i += 1) {
+      const raw = rows[i];
+      const applicantData = normalizeApplicantFromRow(raw);
+      const validation = validateApplicantPayload(applicantData);
+
+      if (!validation.ok) {
+        skipped.push({ rowIndex: i + 1, reason: validation.error });
+        continue;
+      }
+
+      try {
+        const scored = await createScoredApplication(req.user._id, applicantData);
+        accepted.push({ rowIndex: i + 1, applicantData, ...scored });
+      } catch (err) {
+        skipped.push({ rowIndex: i + 1, reason: err.message });
+      }
+    }
+
+    if (!accepted.length) {
+      return res.status(400).json({
+        error: 'No valid application rows found',
+        processedRows: maxRows,
+        skipped
+      });
+    }
+
+    const resultPreview = accepted.slice(0, 25).map(item => ({
+      rowIndex: item.rowIndex,
+      applicationId: item.applicationId,
+      result: item.result
+    }));
+
+    res.status(201).json({
+      success: true,
+      processedRows: maxRows,
+      successfulPredictions: accepted.length,
+      skipped,
+      firstResult: accepted[0].result,
+      resultPreview,
+      previewCount: resultPreview.length
+    });
+  } catch (err) {
+    console.error('File scoring error:', err);
+    res.status(500).json({ error: 'Failed to process uploaded dataset', details: err.message });
   }
 };
 

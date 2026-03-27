@@ -66,7 +66,8 @@ Frontend runs on `http://localhost:5173` and backend on `http://localhost:5000`.
 - `POST /api/auth/register` - Register user
 - `POST /api/auth/login` - Login user
 - `GET /api/auth/me` - Get current user
-- `POST /api/credit/apply` - Submit credit application
+- `POST /api/credit/apply` - Submit credit application (manual form)
+- `POST /api/credit/apply-upload` - Upload CSV/XLSX and auto-generate predictions
 - `GET /api/credit/history` - Application history
 - `GET /api/credit/stats` - User statistics
 - `GET /api/credit/bias-report` - Fairness metrics

@@ -184,7 +184,11 @@ def main() -> None:
     if not source.exists():
         raise FileNotFoundError(f"Dataset not found: {source}")
 
-    raw = pd.read_csv(source)
+    if source.suffix.lower() in {".xlsx", ".xls"}:
+        raw = pd.read_excel(source)
+    else:
+        raw = pd.read_csv(source)
+
     col_map = load_column_map(args.column_map)
     df = prepare_dataframe(raw, target=args.target, column_map=col_map)
 
