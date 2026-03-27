@@ -4,6 +4,14 @@
 
 ---
 
+## Deployed Links
+
+- Frontend: https://creditxplain-client.vercel.app/
+- Backend API: https://creditxplain-server.onrender.com
+- ML Service: https://creditxplain-ml.onrender.com
+
+---
+
 ## Quick Navigation
 
 ### For Interviews & Presentations

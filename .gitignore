@@ -32,6 +32,8 @@ Thumbs.db
 .idea/
 *.suo
 *.sln
+*.sublime-project
+*.sublime-workspace
 
 # Python
 __pycache__/
@@ -44,16 +46,6 @@ venv/
 ENV/
 env/
 
-# Assets folder - Documentation and Testing (TRACKED)
-# assets/documentation/     → INCLUDED (professional docs for interviews)
-# assets/testing/README.md  → INCLUDED (testing guide)
-# assets/testing/smoke-tests/   → INCLUDED (test scripts)
-# assets/testing/feature-tests/ → INCLUDED (feature tests)
-.vscode/
-.idea/
-*.sublime-project
-*.sublime-workspace
-
 # Testing
 coverage/
 .nyc_output/
@@ -62,19 +54,6 @@ coverage/
 .cache/
 .parcel-cache/
 
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-venv/
-ENV/
-env/
-
-# Assets folder - Documentation and Testing (TRACKED)
-# assets/documentation/     → INCLUDED (professional docs for interviews)
-# assets/testing/  → INCLUDED (testing guide)
-
+# Private documentation
 assets/documentation/
 
