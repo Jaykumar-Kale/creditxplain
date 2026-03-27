@@ -76,27 +76,12 @@ async function test() {
       numberOfDependents: 2,
       monthlyExpenses: 25000,
       savingsBalance: 100000,
-      educationLevel: 'GRADUATE',
-      maritalStatus: 'Married',
-      homeOwnership: 'Owned',
-      loanPurpose: 'Home'
+      educationLevel: 'master',
+      maritalStatus: 'married',
+      homeOwnership: 'own',
+      loanPurpose: 'Home',
+      gender: 'male'
     };
-      const appData = {
-        age: 35,
-        income: 600000,
-        employmentYears: 5,
-        loanAmount: 200000,
-        existingDebts: 150000,
-        creditHistory: 8,
-        numberOfDependents: 2,
-        monthlyExpenses: 25000,
-        savingsBalance: 100000,
-        educationLevel: 'master',
-        maritalStatus: 'married',
-        homeOwnership: 'own',
-        loanPurpose: 'Home',
-        gender: 'male'
-      };
 
     const appRes = await makeRequest('POST', '/api/credit/apply', appData, token);
     console.log('Status:', appRes.status);

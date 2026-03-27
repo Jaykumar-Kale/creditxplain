@@ -5,7 +5,7 @@ import { ThemeProvider } from './context/ThemeContext.jsx';
 import Navbar from './components/Navbar.jsx';
 
 import Home from './pages/Home.jsx';
-import Dashboard from './pages/Dashboard.jsx'; // ✅ FIXED
+import Dashboard from './pages/Dashboard.jsx'; 
 import History from './pages/History.jsx';
 import About from './pages/About.jsx';
 import Login from './pages/Login.jsx';

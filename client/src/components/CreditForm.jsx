@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { motion } from 'framer-motion';
-import { ChevronRight, ChevronLeft, Send, Upload } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Send, Upload, Download } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '../utils/api.js';
 
@@ -149,6 +149,26 @@ export default function CreditForm({ onResult }) {
     }
   };
 
+  const downloadTemplate = () => {
+    const rows = [
+      'age,income,employmentYears,loanAmount,existingDebts,creditHistory,numberOfDependents,monthlyExpenses,savingsBalance,educationLevel,maritalStatus,homeOwnership,loanPurpose,gender',
+      '35,750000,5,500000,8000,8,2,30000,200000,bachelor,married,own,home,male',
+      '42,900000,10,750000,12000,9,3,35000,350000,master,married,own,business,male',
+      '28,450000,2,250000,5000,6,1,20000,75000,bachelor,single,rent,personal,female'
+    ];
+    const csvContent = rows.join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'creditxplain-template.csv');
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast.success('Template downloaded!');
+  };
+
   return (
     <div className="card max-w-2xl mx-auto">
       <div className="mb-6 p-4 rounded-xl border border-dashed border-brand-300 bg-brand-50/60 dark:bg-brand-900/20 dark:border-brand-700">
@@ -179,6 +199,13 @@ export default function CreditForm({ onResult }) {
                 <Upload className="w-4 h-4" /> Upload & Predict
               </>
             )}
+          </button>
+          <button
+            type="button"
+            onClick={downloadTemplate}
+            className="btn-secondary py-2 px-4 flex items-center gap-2"
+          >
+            <Download className="w-4 h-4" /> Download Template
           </button>
         </div>
 

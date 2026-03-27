@@ -1,74 +1,142 @@
 # CreditXplain - Explainable Credit Scoring System
 
-## Executive Summary
-
-CreditXplain is a full-stack web application implementing an interpretable credit scoring system using MERN stack with hybrid machine learning architecture. The system combines Python-based Gradient Boosting models with Logistic Regression for explainability, providing transparent credit decisions with real-world dataset support and automatic column mapping for banking datasets.
-
-**Key Innovation:** Automatic column mapping from real banking datasets (40+ field name variations) enabling seamless integration of diverse lending data sources without manual data preprocessing.
+**Status:** Production Ready | **Version:** 1.0 | **Last Updated:** March 27, 2026
 
 ---
 
-## Project Overview
+## 📋 Quick Navigation
 
-### Purpose
+### 👨‍💼 For Interviews & Presentations
+- **Start here:** [assets/documentation/01-PROJECT-OVERVIEW.md](assets/documentation/01-PROJECT-OVERVIEW.md)
+- **Demo guide:** [assets/documentation/09-EXAMINER-GUIDE.md](assets/documentation/09-EXAMINER-GUIDE.md)
+- **Test suite:** [Run DEMO_TEST.js](assets/testing/feature-tests/DEMO_TEST.js)
 
-Deliver a production-ready credit scoring platform that prioritizes transparency and interpretability. Designed to demonstrate modern fintech principles including explainable AI, fairness monitoring, automatic model selection, and secure API design.
+### 👨‍💻 For Developers
+- **Full architecture:** [assets/documentation/02-TECHNICAL-ARCHITECTURE.md](assets/documentation/02-TECHNICAL-ARCHITECTURE.md)
+- **API reference:** [assets/documentation/03-API-REFERENCE.md](assets/documentation/03-API-REFERENCE.md)
+- **Testing guide:** [assets/testing/README.md](assets/testing/README.md)
 
-### Problem Statement
-
-Traditional credit scoring systems are opaque. This system addresses:
-- Lack of transparency in lending decisions
-- Difficulty explaining credit scores to applicants
-- Manual data preprocessing overhead when integrating real datasets
-- Inefficient scoring workflows for bulk applications
-- Unequal lending practices across demographics
-
-### Solution Architecture
-
-Three-tier microservices architecture with fallback mechanisms:
-
-1. **Frontend (React/Vite):** Interactive application submission, real-time predictions, scenario simulation
-2. **Backend (Node.js/Express):** API orchestration, hybrid ML scoring (Python-first, JS fallback), authentication
-3. **ML Service (Python/FastAPI):** Gradient Boosting risk prediction with Logistic Regression explainability
+### 🚀 For Deployment
+- **Deployment guide:** [assets/documentation/08-DEPLOYMENT-GUIDE.md](assets/documentation/08-DEPLOYMENT-GUIDE.md)
+- **Security best practices:** [assets/documentation/06-SECURITY-IMPLEMENTATION.md](assets/documentation/06-SECURITY-IMPLEMENTATION.md)
 
 ---
 
-## Technical Architecture
+## 🎯 Executive Summary
 
-### Technology Stack
+CreditXplain is a **production-ready fintech application** that makes credit scoring transparent and fair. Instead of black-box lending decisions, every application includes:
 
-**Frontend:**
-- React 18 with Vite for rapid development and optimized builds
-- Tailwind CSS for responsive design (mobile-first)
-- Recharts for data visualization and bias metrics
-- Framer Motion for smooth UI transitions
-- Axios for HTTP client communication
+✅ **Explainable Scores** - 7-factor breakdown showing what drove the decision  
+✅ **What-If Scenarios** - Shows applicants how to improve their score  
+✅ **Fair Lending** - Built-in bias detection aligned with compliance requirements  
+✅ **Real-World Ready** - Automatically maps 40+ banking field name variations  
+✅ **Hybrid Resilience** - Continues operating with fallback if ML service fails  
+✅ **Professional APIs** - 11 RESTful endpoints with JWT authentication
 
-**Backend:**
-- Node.js with Express.js framework
-- MongoDB (Atlas) for persistence
-- JWT for stateless authentication
-- Multer v2 for secure file uploads
-- xlsx library for Excel/CSV parsing
-- PDFKit for report generation
+---
 
-**Machine Learning:**
-- Python 3.9+ with scikit-learn
-- FastAPI with Uvicorn for ML microservice
-- Gradient Boosting Classifier (primary risk model)
-- Logistic Regression (explainability model)
-- Joblib for model serialization
-- Pandas for data manipulation
-
-### Architectural Pattern
+## 🏗️ Project Structure
 
 ```
-[Frontend UI] -> [Backend API] -> [Python ML Service]
-                 (fallback to JS Scorer if ML unavailable)
-                 [MongoDB Database]
+creditxplain/
+├── client/                          # React frontend (Vite + Tailwind)
+│   ├── src/
+│   │   ├── components/              # React components
+│   │   ├── pages/                   # Page routes
+│   │   ├── utils/api.js             # API client with auth interceptor
+│   │   └── context/                 # Context providers
+│   └── package.json
+│
+├── server/                          # Node.js/Express backend
+│   ├── controllers/                 # Business logic
+│   ├── routes/                      # API endpoints
+│   ├── models/                      # MongoDB schemas
+│   ├── middleware/                  # Auth, error handling
+│   ├── utils/mlEngine.js            # Hybrid ML scoring
+│   └── package.json
+│
+├── ml/                              # Python FastAPI ML service
+│   ├── app.py                       # FastAPI application
+│   ├── model.py                     # ML model architecture
+│   ├── train.py                     # Model training pipeline
+│   ├── train_real.py                # Real dataset trainer
+│   ├── requirements.txt
+│   └── artifacts/credit_model.joblib
+│
+├── assets/                          # 📂 NEW: Professional documentation
+│   ├── documentation/               # Complete project docs
+│   │   ├── README.md                # Documentation hub
+│   │   ├── 01-PROJECT-OVERVIEW.md   # Vision & objectives
+│   │   ├── 02-TECHNICAL-ARCHITECTURE.md
+│   │   ├── 03-API-REFERENCE.md
+│   │   ├── 04-ML-FRAMEWORK.md
+│   │   ├── 05-DATABASE-DESIGN.md
+│   │   ├── 06-SECURITY-IMPLEMENTATION.md
+│   │   ├── 07-FEATURE-GUIDE.md
+│   │   ├── 08-DEPLOYMENT-GUIDE.md
+│   │   ├── 09-EXAMINER-GUIDE.md
+│   │   └── 10-BEST-PRACTICES.md
+│   │
+│   └── testing/                     # Testing suite & QA
+│       ├── README.md                # Testing guide
+│       ├── smoke-tests/
+│       │   ├── QUICK_TEST.js        # 5-minute endpoint check
+│       │   └── TEST_SUITE.js        # 15-minute feature validation
+│       └── feature-tests/
+│           ├── DEMO_TEST.js         # Full feature demo
+│           └── TEST_ALL_FEATURES.js # Comprehensive testing
+│
+├── .gitignore
+├── .env.example
+└── README.md                        # This file
 ```
 
-**Hybrid Scoring:** Primary tries ML service first, automatic fallback to JavaScript scorer ensures system remains operational.
+---
+
+## ⚡ Quick Start (5 Minutes)
+
+### Prerequisites
+- Node.js 18+
+- Python 3.9+
+- MongoDB (Atlas or local)
+
+### 1. Backend Setup
+```bash
+cd server
+npm install
+# Create .env with MONGO_URI, JWT_SECRET, etc.
+# Copy from server/.env.example
+npm run dev
+# Runs on http://localhost:5000
+```
+
+### 2. Frontend Setup
+```bash
+cd client
+npm install
+npm run dev
+# Runs on http://localhost:5173
+```
+
+### 3. ML Service Setup (Optional but Recommended)
+```bash
+cd ml
+python -m venv .venv
+.\. venv\Scripts\activate
+pip install -r requirements.txt
+python train.py
+uvicorn app:app --reload
+# Runs on http://localhost:8000
+```
+
+### 4. Test It
+```bash
+# Run smoke tests
+node assets/testing/smoke-tests/QUICK_TEST.js
+
+# Or run full demo
+node assets/testing/feature-tests/DEMO_TEST.js
+```
 
 ---
 

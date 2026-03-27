@@ -30,6 +30,27 @@ Thumbs.db
 # IDE
 .vscode/
 .idea/
+*.suo
+*.sln
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv
+venv/
+ENV/
+env/
+
+# Assets folder - Documentation and Testing (TRACKED)
+# assets/documentation/     → INCLUDED (professional docs for interviews)
+# assets/testing/README.md  → INCLUDED (testing guide)
+# assets/testing/smoke-tests/   → INCLUDED (test scripts)
+# assets/testing/feature-tests/ → INCLUDED (feature tests)
+.vscode/
+.idea/
 *.sublime-project
 *.sublime-workspace
 
@@ -50,3 +71,9 @@ __pycache__/
 venv/
 ENV/
 env/
+
+# Assets folder - Documentation and Testing (TRACKED)
+# assets/documentation/     → INCLUDED (professional docs for interviews)
+# assets/testing/  → INCLUDED (testing guide)
+
+#assets/documentation/
