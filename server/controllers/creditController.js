@@ -1,5 +1,5 @@
 import Application from '../models/Application.js';
-import { calculateCreditScore, computeBiasMetrics } from '../utils/mlEngine.js';
+import { scoreApplication, computeBiasMetrics } from '../utils/mlEngine.js';
 
 export const submitApplication = async (req, res) => {
   try {
@@ -14,7 +14,7 @@ export const submitApplication = async (req, res) => {
     }
 
     // Run ML Engine
-    const result = calculateCreditScore(applicantData);
+    const result = await scoreApplication(applicantData);
 
     // Save to DB
     const application = new Application({

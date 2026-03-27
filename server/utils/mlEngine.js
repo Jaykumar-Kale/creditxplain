@@ -1,5 +1,42 @@
-// Pure JS ML Engine - No Python needed!
-// Implements Logistic Regression + Decision Tree logic with SHAP-like explanations
+import axios from 'axios';
+
+// Hybrid scoring engine:
+// 1) Try Python ML microservice if configured and reachable
+// 2) Fallback to local JS scoring to keep app available
+
+export async function scoreApplication(data) {
+  const mlServiceUrl = process.env.ML_SERVICE_URL;
+  if (!mlServiceUrl) {
+    return calculateCreditScore(data);
+  }
+
+  try {
+    const baseUrl = mlServiceUrl.replace(/\/+$/, '');
+    const response = await axios.post(`${baseUrl}/score`, data, { timeout: 5000 });
+    const remote = response?.data;
+
+    if (isValidRemoteScore(remote)) {
+      return remote;
+    }
+
+    console.warn('ML service returned invalid response shape. Falling back to JS scorer.');
+  } catch (error) {
+    const reason = error?.response?.data?.detail || error.message;
+    console.warn(`ML service unavailable (${reason}). Falling back to JS scorer.`);
+  }
+
+  return calculateCreditScore(data);
+}
+
+function isValidRemoteScore(payload) {
+  return Boolean(
+    payload &&
+    typeof payload.creditScore === 'number' &&
+    typeof payload.decision === 'string' &&
+    Array.isArray(payload.explanations) &&
+    Array.isArray(payload.whatIfScenarios)
+  );
+}
 
 export function calculateCreditScore(data, options = {}) {
   const includeWhatIf = options.includeWhatIf !== false;

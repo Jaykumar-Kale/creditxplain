@@ -16,14 +16,28 @@ Built for research and hackathon use cases using MERN with explainable AI concep
 
 - Frontend: React, Vite, Tailwind CSS, Framer Motion, Recharts
 - Backend: Node.js, Express, MongoDB, PDFKit
-- ML Logic: Custom JavaScript scoring engine (no external AI API)
+- ML Logic: Python microservice (Gradient Boosting + Logistic Regression explainability) with JS fallback
 
 ## Project Structure
 
 ```
 creditxplain/
     client/
+    ml/
     server/
+```
+
+## Optional Python ML Service
+
+The backend first tries the Python ML service at `ML_SERVICE_URL` and automatically falls back to the built-in JS scorer if the service is down.
+
+```bash
+cd ml
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+python train.py
+uvicorn app:app --host 0.0.0.0 --port 8000 --reload
 ```
 
 ## Quick Start
