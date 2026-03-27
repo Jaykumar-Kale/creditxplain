@@ -17,6 +17,7 @@ const app = express();
 app.set('trust proxy', 1);
 
 const normalizeOrigin = (value) => (value || '').trim().replace(/\/+$/, '');
+const isVercelOrigin = (origin) => /^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(origin);
 
 const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:5173')
   .split(',')
@@ -30,8 +31,17 @@ app.use(cors({
   origin: (origin, callback) => {
     // Allow tools/health checks with no Origin header.
     if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(normalizeOrigin(origin))) return callback(null, true);
-    return callback(new Error('Not allowed by CORS'));
+
+    const normalizedOrigin = normalizeOrigin(origin);
+    if (allowedOrigins.includes(normalizedOrigin)) return callback(null, true);
+
+    // In production, allow Vercel-hosted frontend URLs.
+    if (process.env.NODE_ENV === 'production' && isVercelOrigin(normalizedOrigin)) {
+      return callback(null, true);
+    }
+
+    // Reject without throwing to avoid turning CORS misses into 500 responses.
+    return callback(null, false);
   },
   credentials: true
 }));
