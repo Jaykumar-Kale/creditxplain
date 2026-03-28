@@ -55,5 +55,5 @@ coverage/
 .parcel-cache/
 
 # Private documentation
-assets/documentation/
+# assets/documentation/
 
